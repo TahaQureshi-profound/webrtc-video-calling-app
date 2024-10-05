@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Calling App</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <script src="/js/socket.io.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
+  </head>
+  <body>
+    <div id="main">
+      <button class="openbtn" onclick="openNav()">☰</button>
+    </div>
+    <div id="mySidebar" class="sidebar">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+      <aside class="caller-list-wrapper">
+        <h1 class="caller-list-heading h-font">Contacts</h1>
+        <ul id="allusers" class="caller-list"></ul>
+      </aside>
+    </div>
+
+    <main class="main-container">
+     
+      <section class="video-call-container">
+        <div class="username-input">
+          <input
+            id="username"
+            type="text"
+            placeholder="Enter Username"
+          /><button id="create-user">Join</button>
+        </div>
+        <div class="video-streams">
+          <div class="remote-video" id="remote-video-container">
+            <!-- <video id="remoteVideo" autoplay muted playsinline></video> -->
+          </div>
+          <audio id="remoteAudio" autoplay></audio>
+        </div>
+        <div class="local-video draggable" id="local-video-container"></div>
+        <div class="widget-container">
+          <button
+            button-name="End Call"
+            type="button"
+            id="end-call-btn"
+            class="call call-disconnect d-none"
+          >
+            <i class="fas fa-phone-slash"></i>
+          </button>
+          <button
+            button-name="Answer-call"
+            type="button"
+            id="answerCall"
+            class="call call-answer jumping answer-call d-none"
+          >
+            <i class="fas fa-phone" style="color: aqua"></i>
+          </button>
+          <button
+            button-name="decline-call"
+            type="button"
+            id="declineCall"
+            class="call call-decline jumping answer-call d-none"
+          >
+            <i class="fas fa-phone-slash" style="color: #fff"></i>
+          </button>
+          <button
+            button-name="Video toggle"
+            type="button"
+            id="video-toggle"
+            class=""
+          >
+            <i class="fas"></i>
+          </button>
+        </div>
+      </section>
+      <!-- <button onclick="notifyMe({callerName:'Taha' })">Notify me!</button> -->
+
+      <audio id="notificationPlayer" src="/ring.wav"></audio>
+      <audio id="disconnectedPlayer" src="/disconnected.wav"></audio>
+    </main>
+    <script>
+      document.addEventListener("DOMContentLoaded", function (event) {
+        console.log("onload");
+
+        if (!Notification) {
+          alert(
+            "Desktop notifications not available in your browser. Try Chromium."
+          );
+          return;
+        }
+
+        if (Notification.permission !== "granted")
+          Notification.requestPermission();
+      });
+
+      function notifyMe({ callerName }) {
+        if (Notification.permission !== "granted")
+          Notification.requestPermission();
+        else {
+          var notification = new Notification(`New Call`, {
+            body: `${callerName} is calling!`,
+          });
+          notification.onclick = function () {
+            window.open("/");
+          };
+        }
+      }
+      $(function () {
+        $(".draggable").draggable();
+      });
+
+      function openNav() {
+        document.getElementById("mySidebar").style.width = "250px";
+        document.getElementById("main").style.marginLeft = "250px";
+      }
+
+      function closeNav() {
+        document.getElementById("mySidebar").style.width = "0";
+        document.getElementById("main").style.marginLeft = "0";
+      }
+    </script>
+    <script src="/js/main.js" defer></script>
+  </body>
+</html>
